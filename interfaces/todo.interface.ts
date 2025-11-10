@@ -57,7 +57,7 @@ export interface TodosResponse {
 export interface DeleteResponse {
     success: boolean;
     deleted: {
-        id: number;
+        id: number | string; // API may return string or number
         message: string;
     };
 }

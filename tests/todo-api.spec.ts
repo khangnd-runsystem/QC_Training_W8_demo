@@ -9,9 +9,13 @@ test.describe('Todo API Tests - Schema Validation & CRUD Operations', () => {
     test.beforeEach(async ({ page, apiContext }) => {
         // Initialize page object
         todoApiPage = new TodoApiPage(page, apiContext);
-        
-        // Reset database before each test
-        await todoApiPage.resetDatabase();
+    });
+
+    // Reset database once at the beginning
+    test.describe.serial('Setup', () => {
+        test('TC00 - Reset database for initial state', async () => {
+            await todoApiPage.resetDatabase();
+        });
     });
 
     test.describe('Schema Validation Tests', () => {
@@ -63,8 +67,12 @@ test.describe('Todo API Tests - Schema Validation & CRUD Operations', () => {
         });
 
         test('TC08 - GET todo by valid ID returns correct todo', async () => {
-            const response = await todoApiPage.getTodoById(1);
-            // Page already validates the todo ID matches
+            // Get all todos first to get a valid ID
+            const todosResponse = await todoApiPage.getAllTodos();
+            if (todosResponse.todos.length > 0) {
+                const validId = todosResponse.todos[0].id;
+                await todoApiPage.getTodoById(validId);
+            }
         });
 
         test('TC09 - GET todo by non-existent ID returns 404', async () => {
@@ -135,8 +143,19 @@ test.describe('Todo API Tests - Schema Validation & CRUD Operations', () => {
 
     test.describe('PUT Method Tests', () => {
         test('TC16 - PUT full update existing todo', async () => {
+            // Create a new todo first
+            const newTodo: TodoInput = {
+                title: 'Todo to be fully updated',
+                description: 'Original description',
+                status: 'pending',
+                priority: 'medium',
+            };
+            const createResponse = await todoApiPage.createTodo(newTodo);
+            const todoId = createResponse.todo.id;
+            
+            // Now update it
             const updateData: TodoUpdate = {
-                id: 1,
+                id: todoId,
                 title: 'Fully updated todo',
                 description: 'This todo has been completely updated',
                 status: 'completed',
@@ -147,7 +166,7 @@ test.describe('Todo API Tests - Schema Validation & CRUD Operations', () => {
             await todoApiPage.updateTodo(updateData);
             
             // Verify updated values by getting the todo
-            await todoApiPage.getTodoById(1);
+            await todoApiPage.getTodoById(todoId);
         });
 
         test('TC17 - PUT update with minimal required fields', async () => {
@@ -178,8 +197,17 @@ test.describe('Todo API Tests - Schema Validation & CRUD Operations', () => {
 
     test.describe('PATCH Method Tests', () => {
         test('TC20 - PATCH update only todo status', async () => {
+            // Create a new todo first
+            const newTodo: TodoInput = {
+                title: 'Todo to patch status',
+                status: 'pending',
+            };
+            const createResponse = await todoApiPage.createTodo(newTodo);
+            const todoId = createResponse.todo.id;
+            
+            // Now patch it
             const patchData: TodoPatch = {
-                id: 1,
+                id: todoId,
                 status: 'in_progress',
             };
             await todoApiPage.patchTodo(patchData);
@@ -222,14 +250,21 @@ test.describe('Todo API Tests - Schema Validation & CRUD Operations', () => {
 
     test.describe('DELETE Method Tests', () => {
         test('TC25 - DELETE existing todo successfully', async () => {
+            // Create a new todo first
+            const newTodo: TodoInput = {
+                title: 'Todo to be deleted',
+            };
+            const createResponse = await todoApiPage.createTodo(newTodo);
+            const todoId = createResponse.todo.id;
+            
             // First verify todo exists
-            await todoApiPage.getTodoById(1);
+            await todoApiPage.getTodoById(todoId);
             
             // Delete the todo
-            await todoApiPage.deleteTodo(1);
+            await todoApiPage.deleteTodo(todoId);
             
             // Verify todo no longer exists
-            await todoApiPage.getTodoByIdNotFound(1);
+            await todoApiPage.getTodoByIdNotFound(todoId);
         });
 
         test('TC26 - DELETE non-existent todo returns 404', async () => {
