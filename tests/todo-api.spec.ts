@@ -1,4 +1,4 @@
-import { test } from '../fixtures/base-test';
+import { test } from './base-test';
 import { TodoApiPage } from '../pages/todo-api-page';
 import { TodoInput, TodoUpdate, TodoPatch } from '../interfaces/todo.interface';
 
