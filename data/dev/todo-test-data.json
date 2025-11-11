@@ -1,0 +1,141 @@
+{
+  "schemaValidation": {
+    "newTodo": {
+      "title": "Schema validation test todo",
+      "description": "Testing schema validation",
+      "status": "pending",
+      "priority": "medium"
+    },
+    "updateTodo": {
+      "id": 1,
+      "title": "Updated todo for schema test",
+      "status": "completed",
+      "priority": "high"
+    },
+    "patchTodo": {
+      "id": 1,
+      "status": "in_progress"
+    }
+  },
+  "createTodos": {
+    "fullTodo": {
+      "title": "Complete API testing",
+      "description": "Test all CRUD operations for Todo API",
+      "status": "pending",
+      "priority": "high",
+      "due_date": "2025-12-31T23:59:59",
+      "user_id": 1
+    },
+    "minimalTodo": {
+      "title": "Minimal todo"
+    },
+    "invalidTodo": {
+      "description": "Todo without title"
+    },
+    "priorities": ["low", "medium", "high"],
+    "statuses": ["pending", "in_progress", "completed"]
+  },
+  "updateTodos": {
+    "fullUpdate": {
+      "create": {
+        "title": "Todo to be fully updated",
+        "description": "Original description",
+        "status": "pending",
+        "priority": "medium"
+      },
+      "update": {
+        "title": "Fully updated todo",
+        "description": "This todo has been completely updated",
+        "status": "completed",
+        "priority": "low",
+        "due_date": "2025-11-30T18:00:00",
+        "user_id": 1
+      }
+    },
+    "minimalUpdate": {
+      "id": 2,
+      "title": "Updated title only"
+    },
+    "notFoundUpdate": {
+      "id": 99999,
+      "title": "This should fail"
+    },
+    "statusUpdate": {
+      "id": 3,
+      "title": "Complete this task",
+      "status": "completed"
+    }
+  },
+  "patchTodos": {
+    "statusPatch": {
+      "create": {
+        "title": "Todo to patch status",
+        "status": "pending"
+      },
+      "patch": {
+        "status": "in_progress"
+      }
+    },
+    "priorityPatch": {
+      "id": 2,
+      "priority": "high"
+    },
+    "multipleFieldsPatch": {
+      "id": 3,
+      "title": "Partially updated todo",
+      "status": "completed",
+      "priority": "medium"
+    },
+    "notFoundPatch": {
+      "id": 99999,
+      "status": "completed"
+    },
+    "descriptionNullPatch": {
+      "id": 4,
+      "description": ""
+    }
+  },
+  "deleteTodos": {
+    "todoToDelete": {
+      "title": "Todo to be deleted"
+    },
+    "notFoundId": 99999,
+    "existingId": 2,
+    "sequentialIds": [3, 4, 5]
+  },
+  "crudWorkflow": {
+    "create": {
+      "title": "CRUD workflow test",
+      "description": "Testing complete CRUD workflow",
+      "status": "pending",
+      "priority": "medium"
+    },
+    "update": {
+      "title": "Updated CRUD workflow test",
+      "status": "in_progress",
+      "priority": "high"
+    },
+    "patch": {
+      "status": "completed"
+    }
+  },
+  "multipleTodos": [
+    {
+      "title": "First todo",
+      "priority": "low"
+    },
+    {
+      "title": "Second todo",
+      "priority": "medium"
+    },
+    {
+      "title": "Third todo",
+      "priority": "high"
+    }
+  ],
+  "resetTest": {
+    "todoBeforeReset": {
+      "title": "Test todo before reset"
+    }
+  }
+}
