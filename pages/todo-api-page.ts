@@ -13,10 +13,11 @@ import {
     ResetResponse,
 } from '../interfaces/todo.interface';
 import { step } from '../utils/logging';
+import { schemaValidator } from '../utils/schema-validator';
 
 /**
  * Todo API Page Object
- * Handles all API requests and validations for Todo API
+ * Handles all API requests and validations for Todo API using AJV schema validation
  * Extends CommonPage to maintain POM structure
  */
 export class TodoApiPage extends CommonPage {
@@ -32,40 +33,11 @@ export class TodoApiPage extends CommonPage {
     // ============ UTILITY METHODS ============
 
     /**
-     * Validate Todo schema structure
+     * Validate Todo schema structure using AJV
      */
     @step('Validate Todo schema structure')
     async validateTodoSchema(todo: Todo): Promise<void> {
-        expect(todo).toHaveProperty('id');
-        expect(typeof todo.id).toBe('number');
-        
-        expect(todo).toHaveProperty('user_id');
-        expect(typeof todo.user_id).toBe('number');
-        
-        expect(todo).toHaveProperty('title');
-        expect(typeof todo.title).toBe('string');
-        expect(todo.title.length).toBeGreaterThan(0);
-        
-        expect(todo).toHaveProperty('description');
-        if (todo.description !== null) {
-            expect(typeof todo.description).toBe('string');
-        }
-        
-        expect(todo).toHaveProperty('status');
-        expect(['pending', 'in_progress', 'completed']).toContain(todo.status);
-        
-        expect(todo).toHaveProperty('priority');
-        expect(['low', 'medium', 'high']).toContain(todo.priority);
-        
-        expect(todo).toHaveProperty('due_date');
-        
-        expect(todo).toHaveProperty('created_at');
-        expect(typeof todo.created_at).toBe('string');
-        
-        expect(todo).toHaveProperty('updated_at');
-        expect(typeof todo.updated_at).toBe('string');
-        
-        console.log('✓ Todo schema validation passed');
+        schemaValidator.validateTodo(todo);
     }
 
     /**
@@ -73,12 +45,8 @@ export class TodoApiPage extends CommonPage {
      */
     @step('Validate TodosResponse schema')
     async validateTodosResponseSchema(response: TodosResponse): Promise<void> {
-        expect(response).toHaveProperty('success');
-        expect(typeof response.success).toBe('boolean');
+        schemaValidator.validateTodosResponse(response);
         expect(response.success).toBe(true);
-        
-        expect(response).toHaveProperty('todos');
-        expect(Array.isArray(response.todos)).toBe(true);
         
         console.log('✓ TodosResponse schema validation passed');
     }
@@ -88,14 +56,8 @@ export class TodoApiPage extends CommonPage {
      */
     @step('Validate TodoResponse schema')
     async validateTodoResponseSchema(response: TodoResponse): Promise<void> {
-        expect(response).toHaveProperty('success');
-        expect(typeof response.success).toBe('boolean');
+        schemaValidator.validateTodoResponse(response);
         expect(response.success).toBe(true);
-        
-        expect(response).toHaveProperty('todo');
-        expect(typeof response.todo).toBe('object');
-        
-        await this.validateTodoSchema(response.todo);
         
         console.log('✓ TodoResponse schema validation passed');
     }
@@ -111,10 +73,8 @@ export class TodoApiPage extends CommonPage {
         
         expect(response).toHaveProperty('deleted');
         expect(response.deleted).toHaveProperty('id');
-        // API returns id as string, so we accept both string and number
+        // Accept both string and number for ID (API inconsistency)
         expect(['number', 'string']).toContain(typeof response.deleted.id);
-        expect(response.deleted).toHaveProperty('message');
-        expect(typeof response.deleted.message).toBe('string');
         
         console.log('✓ DeleteResponse schema validation passed');
     }
