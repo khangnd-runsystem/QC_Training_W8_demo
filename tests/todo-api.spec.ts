@@ -1,4 +1,4 @@
-import { test } from './base-test';
+import { test, expect } from './base-test';
 import { TodoApiPage } from '../pages/todo-api-page';
 import { TodoInput, TodoUpdate, TodoPatch } from '../interfaces/todo.interface';
 import { BaseTest } from './base-test';
@@ -58,25 +58,22 @@ test.describe('Todo API Tests - Schema Validation & CRUD Operations', () => {
     test.describe('GET Method Tests', () => {
         test('TC07 - GET all todos returns list successfully', async () => {
             const response = await todoApiPage.getAllTodos();
-            // Page already validates schema and response
+            // Schema validation is already done in page object
+            expect(response.todos).toBeDefined();
+            expect(response.todos.length).toBeGreaterThanOrEqual(0);
         });
 
         test('TC08 - GET todo by valid ID returns correct todo', async () => {
-            // Get all todos first to get a valid ID
             const todosResponse = await todoApiPage.getAllTodos();
             if (todosResponse.todos.length > 0) {
                 const validId = todosResponse.todos[0].id;
-                await todoApiPage.getTodoById(validId);
+                const response = await todoApiPage.getTodoById(validId);
+                expect(response.todo.id).toBe(validId);
             }
         });
 
         test('TC09 - GET todo by non-existent ID returns 404', async () => {
-            await todoApiPage.getTodoByIdNotFound(99999);
-        });
-
-        test('TC10 - GET all todos returns todos ordered by creation date', async () => {
-            const response = await todoApiPage.getAllTodos();
-            // Verify todos are present (schema already validated)
+            await todoApiPage.getTodoByIdNotFound(testData.getTodos.notFoundId);
         });
     });
 
