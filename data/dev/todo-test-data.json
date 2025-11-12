@@ -1,4 +1,7 @@
 {
+  "getTodos": {
+    "notFoundId": 99999
+  },
   "schemaValidation": {
     "newTodo": {
       "title": "Schema validation test todo",

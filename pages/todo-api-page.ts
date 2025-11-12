@@ -417,4 +417,23 @@ export class TodoApiPage extends CommonPage {
         expect(todoExists).toBe(false);
         console.log(`✓ Verified todo with ID ${todoId} does not exist in list`);
     }
+
+    /**
+     * Verify todos list is returned successfully
+     */
+    @step('Verify todos list returned successfully')
+    async verifyTodosListReturned(todosResponse: TodosResponse): Promise<void> {
+        expect(todosResponse.todos).toBeDefined();
+        expect(todosResponse.todos.length).toBeGreaterThanOrEqual(0);
+        console.log(`✓ Verified todos list returned with ${todosResponse.todos.length} items`);
+    }
+
+    /**
+     * Verify retrieved todo matches expected ID
+     */
+    @step('Verify retrieved todo matches ID')
+    async verifyTodoMatchesId(todoResponse: TodoResponse, expectedId: number): Promise<void> {
+        expect(todoResponse.todo.id).toBe(expectedId);
+        console.log(`✓ Verified todo ID matches: ${expectedId}`);
+    }
 }

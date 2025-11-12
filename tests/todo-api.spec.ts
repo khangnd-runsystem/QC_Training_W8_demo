@@ -1,4 +1,4 @@
-import { test, expect } from './base-test';
+import { test } from './base-test';
 import { TodoApiPage } from '../pages/todo-api-page';
 import { TodoInput, TodoUpdate, TodoPatch } from '../interfaces/todo.interface';
 import { BaseTest } from './base-test';
@@ -58,9 +58,7 @@ test.describe('Todo API Tests - Schema Validation & CRUD Operations', () => {
     test.describe('GET Method Tests', () => {
         test('TC07 - GET all todos returns list successfully', async () => {
             const response = await todoApiPage.getAllTodos();
-            // Schema validation is already done in page object
-            expect(response.todos).toBeDefined();
-            expect(response.todos.length).toBeGreaterThanOrEqual(0);
+            await todoApiPage.verifyTodosListReturned(response);
         });
 
         test('TC08 - GET todo by valid ID returns correct todo', async () => {
@@ -68,7 +66,7 @@ test.describe('Todo API Tests - Schema Validation & CRUD Operations', () => {
             if (todosResponse.todos.length > 0) {
                 const validId = todosResponse.todos[0].id;
                 const response = await todoApiPage.getTodoById(validId);
-                expect(response.todo.id).toBe(validId);
+                await todoApiPage.verifyTodoMatchesId(response, validId);
             }
         });
 
