@@ -1,6 +1,6 @@
 import { APIRequestContext, Page, expect } from '@playwright/test';
 import { CommonPage } from './common-page';
-import { TodoApiLocators } from '../locators/todo-api-locators';
+import { TodoApiEndpoints } from '../base/base-api';
 import {
     Todo,
     TodoInput,
@@ -21,13 +21,13 @@ import { schemaValidator } from '../utils/schema-validator';
  * Extends CommonPage to maintain POM structure
  */
 export class TodoApiPage extends CommonPage {
-    readonly todoApiLocators: TodoApiLocators;
+    private readonly endpoints: TodoApiEndpoints;
     private apiContext: APIRequestContext;
 
     constructor(page: Page, apiContext: APIRequestContext) {
         super(page);
-        this.todoApiLocators = new TodoApiLocators(page);
         this.apiContext = apiContext;
+        this.endpoints = new TodoApiEndpoints(apiContext);
     }
 
     // ============ UTILITY METHODS ============
@@ -87,7 +87,7 @@ export class TodoApiPage extends CommonPage {
     @step('Reset database')
     async resetDatabase(): Promise<ResetResponse> {
         console.log('Resetting database...');
-        const url = this.todoApiLocators.getResetUrl();
+        const url = this.endpoints.getResetUrl();
         
         const response = await this.apiContext.post(url);
         
@@ -128,7 +128,7 @@ export class TodoApiPage extends CommonPage {
     @step('GET all todos')
     async getAllTodos(): Promise<TodosResponse> {
         console.log('Getting all todos...');
-        const url = this.todoApiLocators.getTodosUrl();
+        const url = this.endpoints.getTodosUrl();
         
         const response = await this.apiContext.get(url);
         expect(response.ok()).toBeTruthy();
@@ -152,7 +152,7 @@ export class TodoApiPage extends CommonPage {
     @step('GET todo by ID')
     async getTodoById(id: number): Promise<TodoResponse> {
         console.log(`Getting todo with ID: ${id}...`);
-        const url = this.todoApiLocators.getTodoByIdUrl(id);
+        const url = this.endpoints.getTodoByIdUrl(id);
         
         const response = await this.apiContext.get(url);
         expect(response.ok()).toBeTruthy();
@@ -172,7 +172,7 @@ export class TodoApiPage extends CommonPage {
     @step('GET todo by ID - expect not found')
     async getTodoByIdNotFound(id: number): Promise<ErrorResponse> {
         console.log(`Getting non-existent todo with ID: ${id}...`);
-        const url = this.todoApiLocators.getTodoByIdUrl(id);
+        const url = this.endpoints.getTodoByIdUrl(id);
         
         const response = await this.apiContext.get(url);
         expect(response.status()).toBe(404);
@@ -191,7 +191,7 @@ export class TodoApiPage extends CommonPage {
     @step('POST - Create new todo')
     async createTodo(todoInput: TodoInput): Promise<TodoResponse> {
         console.log('Creating new todo...');
-        const url = this.todoApiLocators.getTodoUrl();
+        const url = this.endpoints.getTodoUrl();
         
         const response = await this.apiContext.post(url, {
             data: todoInput,
@@ -224,7 +224,7 @@ export class TodoApiPage extends CommonPage {
     @step('POST - Create todo with missing required field')
     async createTodoMissingField(todoInput: Partial<TodoInput>): Promise<ErrorResponse> {
         console.log('Creating todo with missing required field...');
-        const url = this.todoApiLocators.getTodoUrl();
+        const url = this.endpoints.getTodoUrl();
         
         const response = await this.apiContext.post(url, {
             data: todoInput,
@@ -245,7 +245,7 @@ export class TodoApiPage extends CommonPage {
     @step('PUT - Full update todo')
     async updateTodo(todoUpdate: TodoUpdate): Promise<TodoResponse> {
         console.log(`Updating todo with ID: ${todoUpdate.id}...`);
-        const url = this.todoApiLocators.getTodoUrl();
+        const url = this.endpoints.getTodoUrl();
         
         const response = await this.apiContext.put(url, {
             data: todoUpdate,
@@ -279,7 +279,7 @@ export class TodoApiPage extends CommonPage {
     @step('PUT - Update non-existent todo')
     async updateTodoNotFound(todoUpdate: TodoUpdate): Promise<ErrorResponse> {
         console.log(`Updating non-existent todo with ID: ${todoUpdate.id}...`);
-        const url = this.todoApiLocators.getTodoUrl();
+        const url = this.endpoints.getTodoUrl();
         
         const response = await this.apiContext.put(url, {
             data: todoUpdate,
@@ -300,7 +300,7 @@ export class TodoApiPage extends CommonPage {
     @step('PATCH - Partial update todo')
     async patchTodo(todoPatch: TodoPatch): Promise<TodoResponse> {
         console.log(`Partially updating todo with ID: ${todoPatch.id}...`);
-        const url = this.todoApiLocators.getTodoUrl();
+        const url = this.endpoints.getTodoUrl();
         
         const response = await this.apiContext.patch(url, {
             data: todoPatch,
@@ -336,7 +336,7 @@ export class TodoApiPage extends CommonPage {
     @step('PATCH - Update non-existent todo')
     async patchTodoNotFound(todoPatch: TodoPatch): Promise<ErrorResponse> {
         console.log(`Patching non-existent todo with ID: ${todoPatch.id}...`);
-        const url = this.todoApiLocators.getTodoUrl();
+        const url = this.endpoints.getTodoUrl();
         
         const response = await this.apiContext.patch(url, {
             data: todoPatch,
@@ -357,7 +357,7 @@ export class TodoApiPage extends CommonPage {
     @step('DELETE - Delete todo')
     async deleteTodo(id: number): Promise<DeleteResponse> {
         console.log(`Deleting todo with ID: ${id}...`);
-        const url = this.todoApiLocators.getTodoUrl();
+        const url = this.endpoints.getTodoUrl();
         
         const response = await this.apiContext.delete(url, {
             data: { id },
@@ -381,7 +381,7 @@ export class TodoApiPage extends CommonPage {
     @step('DELETE - Delete non-existent todo')
     async deleteTodoNotFound(id: number): Promise<ErrorResponse> {
         console.log(`Deleting non-existent todo with ID: ${id}...`);
-        const url = this.todoApiLocators.getTodoUrl();
+        const url = this.endpoints.getTodoUrl();
         
         const response = await this.apiContext.delete(url, {
             data: { id },
