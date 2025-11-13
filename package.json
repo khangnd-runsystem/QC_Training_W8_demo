@@ -2,7 +2,9 @@
   "name": "demo-final",
   "version": "1.0.0",
   "main": "index.js",
-  "scripts": {},
+  "scripts": {
+    "test": "npx playwright test tests/todo-api.spec.ts"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
