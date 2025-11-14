@@ -14,6 +14,7 @@ import {
 } from '../interfaces/todo.interface';
 import { step } from '../utils/logging';
 import { schemaValidator } from '../utils/schema-validator';
+import { manualValidator } from '../utils/manual-validator';
 
 /**
  * Todo API Page Object
@@ -41,6 +42,14 @@ export class TodoApiPage extends CommonPage {
     }
 
     /**
+     * Validate Todo schema structure using Manual Validation (không dùng AJV)
+     */
+    @step('Validate Todo schema structure (Manual)')
+    async validateTodoSchemaManual(todo: Todo): Promise<void> {
+        manualValidator.validateTodo(todo);
+    }
+
+    /**
      * Validate TodosResponse schema
      */
     @step('Validate TodosResponse schema')
@@ -52,6 +61,17 @@ export class TodoApiPage extends CommonPage {
     }
 
     /**
+     * Validate TodosResponse schema using Manual Validation (không dùng AJV)
+     */
+    @step('Validate TodosResponse schema (Manual)')
+    async validateTodosResponseSchemaManual(response: TodosResponse): Promise<void> {
+        manualValidator.validateTodosResponse(response);
+        expect(response.success).toBe(true);
+        
+        console.log('✓ TodosResponse manual validation passed');
+    }
+
+    /**
      * Validate TodoResponse schema
      */
     @step('Validate TodoResponse schema')
@@ -60,6 +80,17 @@ export class TodoApiPage extends CommonPage {
         expect(response.success).toBe(true);
         
         console.log('✓ TodoResponse schema validation passed');
+    }
+
+    /**
+     * Validate TodoResponse schema using Manual Validation (không dùng AJV)
+     */
+    @step('Validate TodoResponse schema (Manual)')
+    async validateTodoResponseSchemaManual(response: TodoResponse): Promise<void> {
+        manualValidator.validateTodoResponse(response);
+        expect(response.success).toBe(true);
+        
+        console.log('✓ TodoResponse manual validation passed');
     }
 
     /**
@@ -77,6 +108,38 @@ export class TodoApiPage extends CommonPage {
         expect(['number', 'string']).toContain(typeof response.deleted.id);
         
         console.log('✓ DeleteResponse schema validation passed');
+    }
+
+    /**
+     * Validate DeleteResponse schema using Manual Validation (không dùng AJV)
+     */
+    @step('Validate DeleteResponse schema (Manual)')
+    async validateDeleteResponseSchemaManual(response: DeleteResponse): Promise<void> {
+        manualValidator.validateDeleteResponse(response);
+        expect(response.success).toBe(true);
+        
+        console.log('✓ DeleteResponse manual validation passed');
+    }
+
+    /**
+     * Validate ResetResponse schema using Manual Validation (không dùng AJV)
+     */
+    @step('Validate ResetResponse schema (Manual)')
+    async validateResetResponseSchemaManual(response: ResetResponse): Promise<void> {
+        manualValidator.validateResetResponse(response);
+        expect(response.success).toBe(true);
+        
+        console.log('✓ ResetResponse manual validation passed');
+    }
+
+    /**
+     * Validate ErrorResponse schema using Manual Validation (không dùng AJV)
+     */
+    @step('Validate ErrorResponse schema (Manual)')
+    async validateErrorResponseSchemaManual(response: ErrorResponse): Promise<void> {
+        manualValidator.validateErrorResponse(response);
+        
+        console.log('✓ ErrorResponse manual validation passed');
     }
 
     // ============ API METHODS ============
